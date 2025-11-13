@@ -2,6 +2,10 @@
 title: "p8105_hw5_lg3450"
 output: github_document
 ---
+first load all necessary libraries
+```{r message=FALSE}
+library(tidyverse)
+```
 
 # Problem 1
 **Suppose you put n people in a room, and want to know the probability that at least two people share a birthday. For simplicity, we’ll assume there are no leap years (i.e. there are only 365 days) and that birthdays are uniformly distributed over the year (which is actually not the case).**
@@ -16,7 +20,29 @@ check_birthday = function(n) {
   has_duplicate
 }
 ```
-* Q2: Next, run this function 10000 times for each group size between 2 and 50. For each group size, compute the probability that at least two people in the group will share a birthday by averaging across the 10000 simulation runs. Make a plot showing the probability as a function of group size, and comment on your results.
+* Q2: Next, run this function 10000 times for each group size between 2 and 50. For each group size, compute the probability that at least two people in the group will share a birthday by averaging across the 10000 simulation runs. 
+```{r}
+set.seed(1)
+
+sim_grid = expand_grid(
+  group_size = 2:50,
+  iter = 1:10000)
+
+sim_results = sim_grid |>
+  mutate(
+    has_duplicate = map_dbl(group_size, check_birthday))
+
+prob_results = sim_results |>
+  group_by(group_size) |>
+  summarize(
+    prob_shared = mean(has_duplicate))
+prob_results
+```
+
+* Q3: Make a plot showing the probability as a function of group size, and comment on your results.
+```{r}
+
+```
 
 
 
