@@ -107,26 +107,38 @@ power_plot =
     x = "True Value of μ (Effect Size)",
     y = "Power (Proportion of Null Rejections)"
   ) +
-  scale_y_continuous(labels = scales::percent) +
+  scale_y_continuous(labels = percent) +
   scale_x_continuous(breaks = 0:6) 
 
 power_plot
 power_results
 ```
 
-Based on the plot, the association between  and power is strong, positive, and non-linear. When the effect size is 0 (namely the null hypothesis is true), the power is low, at approximately 5%. As the effect size increases, the power (the probability of correctly detecting the effect) rises rapidly. The power is low for a small effect size, but approaches 100% for large effect sizes. In short, the larger the true effect, the more likely the test is to detect it.
+Based on the plot, the association between and power is strong, positive, and non-linear. When the effect size is 0 (namely the null hypothesis is true), the power is low, at approximately 5%. As the effect size increases, the power (the probability of correctly detecting the effect) rises rapidly. The power is low for a small effect size, but approaches 100% for large effect sizes. In short, the larger the true effect, the more likely the test is to detect it.
 
-* Q2.2: 
-
-
-
+* Q2.2:
+Make a plot showing the average estimate of $\mu\^ on the y axis and the true value of $\mu\ on the x axis. 
 
 
 
 
 
+# Problem3
+
+**The Washington Post has gathered data on homicides in 50 large U.S. cities and made the data available through a GitHub repository here. You can read their accompanying article here.**
+
+* Q3.1: Describe the raw data. Create a city_state variable (e.g. “Baltimore, MD”) and then summarize within cities to obtain the total number of homicides and the number of unsolved homicides (those for which the disposition is “Closed without arrest” or “Open/No arrest”).
+
+```{r}
+
+```
 
 
+* Q3.2: For the city of Baltimore, MD, use the prop.test function to estimate the proportion of homicides that are unsolved; save the output of prop.test as an R object, apply the broom::tidy to this object and pull the estimated proportion and confidence intervals from the resulting tidy dataframe.
+
+* Q3.3: Now run prop.test for each of the cities in your dataset, and extract both the proportion of unsolved homicides and the confidence interval for each. Do this within a “tidy” pipeline, making use of purrr::map, purrr::map2, list columns and unnest as necessary to create a tidy dataframe with estimated proportions and CIs for each city.
+
+* Q3.4: Create a plot that shows the estimates and CIs for each city – check out geom_errorbar for a way to add error bars based on the upper and lower limits. Organize cities according to the proportion of unsolved homicides.
 
 
 
