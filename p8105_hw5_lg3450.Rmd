@@ -135,8 +135,6 @@ homicides = read_csv("../homicide-data.csv")
 ```
 
 ```{r}
-homicides = read_csv("../homicide-data.csv")
-
 unsolved_types = c("Open/No arrest", "Closed without arrest")
 
 city_summary = homicides |>
@@ -159,6 +157,31 @@ The dataset also includes victim demographic variables, such as their `victim_fi
 The disposition variable has three distinct levels. Running `r table(homicides$disposition)` counts the total number of cases for each of these levels, which are: 'Closed by arrest,' 'Open/No arrest,' and 'Closed without arrest.'
 
 * Q3.2: For the city of Baltimore, MD, use the prop.test function to estimate the proportion of homicides that are unsolved; save the output of prop.test as an R object, apply the broom::tidy to this object and pull the estimated proportion and confidence intervals from the resulting tidy dataframe.
+
+```{r}
+final_baltimore_estimates =
+  homicides |>
+  filter(city == "Baltimore", state == "MD") |>
+  summarize(
+    total_homicides = n(),
+    unsolved_homicides = sum(disposition %in% unsolved_types)) |>
+  mutate(
+    prop_test = list(
+      prop.test(
+        x = unsolved_homicides,
+        n = total_homicides))) |>
+  mutate(tidy_res = map(prop_test, broom::tidy)) |>
+  select(tidy_res) |>
+  unnest(tidy_res) |>
+  select(
+    estimate_proportion = estimate,
+    conf_low = conf.low,
+    conf_high = conf.high)
+
+print(final_baltimore_estimates)
+```
+
+# Undone
 
 * Q3.3: Now run prop.test for each of the cities in your dataset, and extract both the proportion of unsolved homicides and the confidence interval for each. Do this within a “tidy” pipeline, making use of purrr::map, purrr::map2, list columns and unnest as necessary to create a tidy dataframe with estimated proportions and CIs for each city.
 
