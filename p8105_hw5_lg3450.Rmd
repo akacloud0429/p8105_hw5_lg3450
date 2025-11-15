@@ -7,6 +7,7 @@ first load all necessary libraries
 library(tidyverse)
 library(broom)
 library(scales)   
+library(dplyr)
 ```
 
 # Problem 1
@@ -129,10 +130,33 @@ Make a plot showing the average estimate of $\mu\^ on the y axis and the true va
 
 * Q3.1: Describe the raw data. Create a city_state variable (e.g. “Baltimore, MD”) and then summarize within cities to obtain the total number of homicides and the number of unsolved homicides (those for which the disposition is “Closed without arrest” or “Open/No arrest”).
 
-```{r}
-
+```{r message=FALSE}
+homicides = read_csv("../homicide-data.csv")
 ```
 
+```{r}
+homicides = read_csv("../homicide-data.csv")
+
+unsolved_types = c("Open/No arrest", "Closed without arrest")
+
+city_summary = homicides |>
+  mutate(city_state = paste(city, state, sep = ", ")) |>
+  mutate(unsolved = disposition %in% unsolved_types) |>
+  group_by(city_state) |>
+  summarize(
+    total_homicides = n(),                      
+    unsolved_homicides = sum(unsolved, na.rm = TRUE)) |>
+  arrange(desc(total_homicides))
+
+print(head(city_summary, 10))
+```
+The dataset contains `r nrow(homicides)` individual homicide records and `r ncol(homicides)` variables describing each case.
+
+Key geographic variables include `city` and `state`, which identify the location. In total, the dataset spans `r length(unique(homicides$city))` distinct cities. For more precise spatial analysis, the dataset also provides the specific `lat` (latitude) and `lon` (longitude) for each incident.
+
+The dataset also includes victim demographic variables, such as their `victim_first` and `victim_last` name. For analysis, the most relevant demographic fields are `victim_race` and `victim_sex`, both of which are categorical variables, and `victim_age`.
+
+The disposition variable has three distinct levels. Running `r table(homicides$disposition)` counts the total number of cases for each of these levels, which are: 'Closed by arrest,' 'Open/No arrest,' and 'Closed without arrest.'
 
 * Q3.2: For the city of Baltimore, MD, use the prop.test function to estimate the proportion of homicides that are unsolved; save the output of prop.test as an R object, apply the broom::tidy to this object and pull the estimated proportion and confidence intervals from the resulting tidy dataframe.
 
